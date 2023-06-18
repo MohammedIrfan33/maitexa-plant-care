@@ -61,22 +61,11 @@ class _AdminState extends State<Admin> {
                     itemBuilder: (BuildContext context, int index) {
                       dynamic message = messages[index];
 
-                      final date = DateTime.parse( message['time']);
-
-                      print(date);
-                      return ListTile(
+                      
+                       return ListTile(
                         title: Text(message['content']),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              message['email'].toString(),
-                            ),
-                            Text(
-                             'hi'
-                              ,
-                            ),
-                          ],
+                        subtitle: Text(
+                          message['email'].toString(),
                         ),
                       );
                     },
