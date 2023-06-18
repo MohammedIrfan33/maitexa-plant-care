@@ -1,0 +1,9 @@
+0 Healthy
+1 Bacterial_spot
+2 Early_blight
+3 Late_blight
+4 Mosaic_virus
+5 YellowLeaf__Curl_Virus
+6 Target_Spot
+7 Spider_mites
+8 Leaf_Mold
