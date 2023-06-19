@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:plant_care/accounts.dart';
 import 'package:plant_care/admin/homeadmin.dart';
 import 'package:plant_care/agriculture%20department/homeagri.dart';
-import 'package:plant_care/firebase/authentication.dart';
 import 'package:plant_care/user/forgot.dart';
 import 'package:plant_care/user/homepage%20user.dart';
 
@@ -62,7 +61,7 @@ class Login extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Padding(
@@ -177,8 +176,17 @@ class _LoginFormState extends State<LoginForm> {
                 builder: (context) =>Homeagri (),
               ),
             )  : ScaffoldMessenger.of(context as BuildContext).showSnackBar(const SnackBar(content:Text('Admin not Verified')));
+          }else if(role ==  'admin'){
+
+             Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Homeadmin(),
+                    ),
+                  );
+
           }
-         else {
+         else  {
             final snackBar = SnackBar(
               content: Text("Something wronng".toString()),
               duration: Duration(seconds: 2),
@@ -289,15 +297,7 @@ class _LoginFormState extends State<LoginForm> {
             width: 184,
             child: ElevatedButton(
               onPressed: () async {
-                if (emailController.text == 'admin@gmail.com') {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Homeadmin(),
-                    ),
-                  );
-                }
-                else
+                
                   await signIn(
                     emailController.text.trim(), passwordController.text.trim());
                 /* AuthenticationHelper()

@@ -5,6 +5,7 @@ import 'package:plant_care/agriculture%20department/viewmessage.dart';
 
 import '../home public.dart';
 import '../user/chat.dart';
+import 'chat.dart';
 
 class Homeagri extends StatefulWidget {
   @override
@@ -132,7 +133,7 @@ class _HomeagriState extends State<Homeagri> {
             padding: const EdgeInsets.only(top: 30, left: 10),
             child: ElevatedButton.icon(
               onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const admin())),
+                  MaterialPageRoute(builder: (context) => const Admin())),
               icon: const Icon(
                 Icons.chat,
                 color: Colors.white,

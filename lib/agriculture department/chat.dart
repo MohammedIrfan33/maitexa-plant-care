@@ -21,7 +21,7 @@ class _AdminState extends State<Admin> {
         {
           'email' : user?.email,
           'content': message,
-          'time': DateTime.now(),
+          'timestamp': Timestamp.now().millisecondsSinceEpoch,
 
         }
       ]),
@@ -44,6 +44,7 @@ class _AdminState extends State<Admin> {
         ),
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
             child: StreamBuilder<DocumentSnapshot>(
@@ -62,7 +63,13 @@ class _AdminState extends State<Admin> {
                       dynamic message = messages[index];
 
                       
-                       return ListTile(
+
+                      
+
+                      
+
+                      
+                      return ListTile(
                         title: Text(message['content']),
                         subtitle: Text(
                           message['email'].toString(),
@@ -76,67 +83,30 @@ class _AdminState extends State<Admin> {
               },
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: Align(
-          //     alignment: Alignment.topRight,
-          //     child: Container(
-          //       width: 100,
-          //       height: 60,
-          //       child: TextField(
-          //         decoration: InputDecoration(
-          //           enabledBorder: OutlineInputBorder(
-          //             borderRadius: BorderRadius.circular(20),
-          //           ),
-          //           hintText: "hi",
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: Align(
-          //     alignment: Alignment.topLeft,
-          //     child: Container(
-          //       width: 100,
-          //       height: 60,
-          //       child: TextField(
-          //         decoration: InputDecoration(
-          //           enabledBorder: OutlineInputBorder(
-          //             borderRadius: BorderRadius.circular(20),
-          //           ),
-          //           hintText: "hello! how can I help you",
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
           
           
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 320),
-              child: TextField(
-                controller: _messageController,
-                onSubmitted: (value) {
-                  _sendMessage(value);
-                },
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.send,
-                      color: Colors.teal[900],
-                    ),
-                    onPressed: () {
-                      _sendMessage(_messageController.text);
-                    },
-                  ),
-                  hintText: "Type here",
+          
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextField(
+              controller: _messageController,
+              onSubmitted: (value) {
+                _sendMessage(value);
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    Icons.send,
+                    color: Colors.teal[900],
+                  ),
+                  onPressed: () {
+                    _sendMessage(_messageController.text);
+                  },
+                ),
+                hintText: "Type here",
               ),
             ),
           ),
