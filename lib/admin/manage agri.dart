@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:plant_care/login.dart';
 
 import 'homeadmin.dart';
 
@@ -21,12 +20,8 @@ class _agri_detailsState extends State<agri_details> {
       'status': 'accepted',
     });
     //login document  appointment id updated with is accepted
-    FirebaseFirestore.instance
-        .collection('login')
-        .doc(appointmentId)
-        .update({
+    FirebaseFirestore.instance.collection('login').doc(appointmentId).update({
       'isAccepted': true,
-
     });
   }
 
@@ -40,6 +35,7 @@ class _agri_detailsState extends State<agri_details> {
       'status': 'rejected',
     });
   }
+
   void deleteUser(String appointmentId) async {
     try {
       await FirebaseFirestore.instance
@@ -58,39 +54,40 @@ class _agri_detailsState extends State<agri_details> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal[900],
           title: Text("User Manage"),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(25),
-                bottomLeft: Radius.circular(25),
-              )),
+            bottomRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+          )),
           actions: [
             IconButton(
                 onPressed: () {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Homeadmin(
-
-                        ),
+                        builder: (context) => Homeadmin(),
                       ));
                 },
                 icon: Icon(Icons.home))
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('agriculture').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('agriculture')
+              .where('isAccepted', isEqualTo: false)
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final appointments = snapshot.data!.docs;
               return ListView.builder(
                 itemCount: appointments.length,
                 itemBuilder: (context, index) {
-                  final appointment = appointments[index].data() as Map<String, dynamic>;
+                  final appointment =
+                      appointments[index].data() as Map<String, dynamic>;
                   final appointmentId = appointments[index].id;
                   final patientName = appointment['name'];
                   final patientPhone = appointment['phone'];
@@ -101,7 +98,8 @@ class _agri_detailsState extends State<agri_details> {
                   return Container(
                     child: Column(
                       children: [
-                        Container(height: 120,
+                        Container(
+                          height: 120,
                           margin: EdgeInsets.all(10),
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -111,42 +109,68 @@ class _agri_detailsState extends State<agri_details> {
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
-                                Text("Name:" +patientName, style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),),
-                                Text("Phone:" +patientPhone, style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),),
-
-                                SizedBox(height: 10,),
-                                Row(mainAxisAlignment: MainAxisAlignment.center,
+                                Text(
+                                  "Name:" + patientName,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "Phone:" + patientPhone,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width:90,
-                                      height: 40,
-                                      color: Colors.green[900],
-                                      child: TextButton(onPressed: (){acceptAppointment(appointmentId);},
-                                        child: Text(status == 'accepted'?'Accepted':'Accept',style: TextStyle(color: Colors.white),),),
-                                    ),
-                                    SizedBox(width: 10,),
                                     Container(
                                       width: 90,
                                       height: 40,
                                       color: Colors.green[900],
-                                      child: TextButton(onPressed: (){
-                                        rejectAppointment(appointmentId);
-                                        deleteUser(appointmentId);
-
-                                      },
-                                        child: Text(status == 'rejected'?'Rejected':'Reject ',style: TextStyle(color: Colors.white),),),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          acceptAppointment(appointmentId);
+                                        },
+                                        child: Text(
+                                          status == 'accepted'
+                                              ? 'Accepted'
+                                              : 'Accept',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                      width: 90,
+                                      height: 40,
+                                      color: Colors.green[900],
+                                      child: TextButton(
+                                        onPressed: () {
+                                          rejectAppointment(appointmentId);
+                                          deleteUser(appointmentId);
+                                        },
+                                        child: Text(
+                                          status == 'rejected'
+                                              ? 'Rejected'
+                                              : 'Reject ',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
-
-                              ],),
+                              ],
+                            ),
                           ),
                         ),
-                      ],),
+                      ],
+                    ),
                   );
                 },
               );
@@ -158,7 +182,7 @@ class _agri_detailsState extends State<agri_details> {
           },
         )
 
-      /*Container(
+        /*Container(
             child: Column(children: [
               Container(
                 height: 150,
@@ -365,7 +389,6 @@ class _agri_detailsState extends State<agri_details> {
               )
             ])
         )*/
-    );
-
+        );
   }
 }

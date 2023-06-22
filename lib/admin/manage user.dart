@@ -85,7 +85,7 @@ class _user_detailsState extends State<user_details> {
         body:Padding(
             padding: const EdgeInsets.all(8.0),
             child:StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('user_Tb').snapshots(),
+              stream: FirebaseFirestore.instance.collection('user_Tb').where('isAccepted',isEqualTo: false).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final appointments = snapshot.data!.docs;

@@ -5,11 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:plant_care/symptoms.dart';
-import 'package:http/http.dart'as http;
-
+import 'package:http/http.dart' as http;
 
 import 'home public.dart';
-
 
 class plants extends StatefulWidget {
   const plants({Key? key}) : super(key: key);
@@ -23,11 +21,11 @@ class _plantsState extends State<plants> {
   late final _filename;
   File? imageFile;
   late String storedImage;
-  String predict='';
+  String predict = '';
   String description = '';
   Future<void> submitForm() async {
-
-    var uri = Uri.parse('https://a23b-117-243-136-188.ngrok-free.app/api/plant_detection'); // Replace with your API endpoint
+    var uri = Uri.parse(
+        'https://a23b-117-243-136-188.ngrok-free.app/api/plant_detection'); // Replace with your API endpoint
 
     var request = http.MultipartRequest('POST', uri);
 
@@ -35,11 +33,11 @@ class _plantsState extends State<plants> {
     final imageLength = await imageFile!.length();
 
     final multipartFile = await http.MultipartFile(
-      'image',imageStream,imageLength,
-      filename: _filename ,
+      'image', imageStream, imageLength,
+      filename: _filename,
       // contentType: MediaType('image', 'jpeg'), // Replace with your desired image type
     );
-   // print(_filename2);
+    // print(_filename2);
     request.files.add(multipartFile);
 
     final response = await request.send();
@@ -50,57 +48,55 @@ class _plantsState extends State<plants> {
       var jsonResponse = json.decode(responseBody);
       var data = jsonResponse['data'];
 
-
       predict = data['class_name'];
 
-      if (predict == "Tulsi") {
-        description = "ulsi's broad-spectrum antimicrobial activity, which includes activity against a range of "
-            "human and animal pathogens, suggests it can be used as a hand sanitizer, mouthwash and water purifier as"
-            " well as in animal rearing, wound healing, the preservation of food stuffs and herbal raw materials and"
-            " traveler's health";
-      } else if (predict == "Curry") {
-        description = "Curry leaves (Murraya koenigii) or sweet neem leaves...";
-      } else if (predict == "Drumstick") {
-        description = "Drumstick leaves are rich in antioxidants, such as vitamin C...";
-      } else if (predict == "Mint") {
-        description = "Mint leaves create a cool sensation in the mouth...";
-      } else if (predict == "Mango") {
-        description = "Mango leaves have antibacterial properties that help treat...";
-      } else if (predict == "Lemon") {
-        description = "Lemon leaves can be wrapped around seafood and meats...";
-      } else if (predict == "Indian Mustard") {
-        description = "May help boost immunity- Mustard leaves are loaded with...";
-      } else if (predict == "Neem") {
-        description = "All parts of the neem tree- leaves, flowers, seeds...";
-      } else if (predict == "Jackfruit") {
-        description = "It is a very effective anti-ageing herb since it slows...";
-      } else if (predict == "Rasna") {
-        description = "Laden with plant-based compounds that showcase strong Ushna...";
+      if (predict == "Healthy") {
+        description = "Healthy Leaf";
+      } else if (predict == "Bacterial_spot") {
+        description =
+            " Copper fungicides are the most commonly recommended treatment for bacterial leaf spot. Use copper fungicide as a preventive measure after you’ve planted your seeds but before you’ve moved the plants into their permanent homes. You can use copper fungicide spray before or after a rain, but don’t treat with copper fungicide while it is raining. If you’re seeing signs of bacterial leaf spot, spray with copper fungicide for a seven- to 10-day period, then spray again for one week after plants are moved into the field Perform maintenance treatments every 10 days in dry weather and every five to seven days in rainy weather Leaf spots turn from yellow or light green to black or dark brown. Older spots are black, slightly raised, superficial and measure up to 0.3 inch (7.5 mm) in diameter. Larger leaf blotches may also occur, especially on the margins of leaves.";
+      } else if (predict == "Early_blight") {
+        description =
+            "Tomatoes that have early blight require immediate attention before the disease takes over the plants. Thoroughly spray the plant (bottoms of leaves also) with Bonide Liquid Copper Fungicide concentrate or Bonide Tomato & Vegetable. Both of these treatments are organiEarly blight is primarily a disease of stressed or senescing plants. Symptoms appear first on the oldest foliage. Affected leaves develop circular to angular dark brown lesions 0.12 to 0.16 inch (3–4 mm) in diameter. ";
+      } else if (predict == "Late_blight") {
+        description =
+            "Tomatoes that have early blight require immediate attention before the disease takes over the plants. Thoroughly spray the plant (bottoms of leaves also) with Bonide Liquid Copper Fungicide concentrate or Bonide Tomato & Vegetable. Both of these treatments are organic.Leaf symptoms of late blight first appear as small, water-soaked areas that rapidly enlarge to form purple-brown, oily-appearing blotches. On the lower side of leaves, rings of grayish white mycelium and spore-forming structures may appear around the blotches.";
+      } else if (predict == "Mosaic_virus") {
+        description =
+            "There are no cures for viral diseases such as mosaic once a plant is infected. As a result, every effort should be made to prevent the disease from entering your garden.virus symptoms consist of various leaf and plant deformities, stunting and poor growth, or yellowing or mosaic or mottling pattern in the leaves.";
+      } else if (predict == "YellowLeaf__Curl_Virus") {
+        description =
+            "Inspect plants for whitefly infestations two times per week. If whiteflies are beginning to appear, spray with azadirachtin (Neem), pyrethrin or insecticidal soap. For more effective control, it is recommended that at least two of the above insecticides be rotated at each spraying The most obvious symptoms plants are small leaves that become yellow between the veins. The leaves also curl upwards and towards the middle of the leaf.";
+      } else if (predict == "Target_Spot") {
+        description =
+            "Many fungicides are registered to control of target spot on tomatoes. Growers should consult regional disease management guides for recommended products. Products containing chlorothalonil, mancozeb, and copper oxychloride have been shown to provide good control of target spot in research trials The disease starts as small circular to oval dark brown to black spots on leavesA bronze or yellow appearance in single or multiple areas of a tree. Silky webs present around tree stems and leaves.";
+      } else if (predict == "Spider_mites") {
+        description =
+            "bifenazate (Acramite): Group UN, a long residual nerve poison abamectin (Agri-Mek): Group 6, derived from a soil bacterium spirotetramat (Movento): Group 23, mainly affects immature stages spiromesifen (Oberon 2SC): Group 23, mainly affects immature stages OMRI-listed products include Small yellow or white spots on the needles or top of the tree leaves.";
+      } else if (predict == "Leaf_Mold") {
+        description =
+            "It is a very effective anti-ageing herb since it slows... \nTomato leaf mold | UMN Extensio Leaf mold is caused by the fungus Passalora fulva (previously called Fulvia fulva or Cladosporium fulvum). It is not known to be pathogenic on any plant ";
       } else {
         description = "Invalid";
       }
 
-      if(description == "Invalid"){
+      if (description == "Invalid") {
         Fluttertoast.showToast(
-          msg:'Not Found',
+          msg: 'Not Found',
           backgroundColor: Colors.grey,
         );
-      }else{
-
-        Navigator.push(this.context, MaterialPageRoute(builder: (context)=>symptoms( name: predict, symptm: description, )));
-
+      } else {
+        Navigator.push(
+            this.context,
+            MaterialPageRoute(
+                builder: (context) => symptoms(
+                      name: predict,
+                      symptm: description,
+                    )));
       }
-
-
-
-
-
-
-
 
       print('Response: $responseBody');
       print('Form submitted successfully');
-
     } else {
       print('Error submitting form. Status code: ${response.statusCode}');
     }
@@ -140,14 +136,19 @@ class _plantsState extends State<plants> {
           );
         });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("capture"),
         backgroundColor: Colors.teal[900],
-        leading: IconButton( onPressed: (){ Navigator.pop(
-            context); }, icon:Icon(Icons. arrow_back),),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -169,54 +170,56 @@ class _plantsState extends State<plants> {
                       ),*/
               child: imageFile == null
                   ? Container(
-                child: Column(
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        //    _getFromGallery();
-                        _showChoiceDialog(context);
-                      },
-                      child: Text("Upload Image"),
-                    ),
-                    Container(
-                      height: 40.0,
-                    ),
-                  ],
-                ),
-              )
-                  : Row(
-                children: [
-                  Container(
-                    width: 200,
-                    height: 200,
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: FileImage(imageFile!),
-                        fit: BoxFit.cover,
+                      child: Column(
+                        children: <Widget>[
+                          ElevatedButton(
+                            onPressed: () {
+                              //    _getFromGallery();
+                              _showChoiceDialog(context);
+                            },
+                            child: Text("Upload Image"),
+                          ),
+                          Container(
+                            height: 40.0,
+                          ),
+                        ],
                       ),
+                    )
+                  : Row(
+                      children: [
+                        Container(
+                          width: 200,
+                          height: 200,
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: FileImage(imageFile!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            //    _getFromGallery();
+                            _showChoiceDialog(context);
+                          },
+                          child: Text("Upload Image"),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(width: 20,),
-                  ElevatedButton(
-                    onPressed: () {
-                      //    _getFromGallery();
-                      _showChoiceDialog(context);
-
-                    },
-                    child: Text("Upload Image"),
-                  ),
-                ],
-              ),
             ),
-          ),   Padding(
+          ),
+          Padding(
             padding: const EdgeInsets.only(top: 100),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Colors.teal[900],
               ),
               onPressed: () {
-               /* Navigator.push(
+                /* Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => symptoms()),
                 );*/
@@ -231,8 +234,7 @@ class _plantsState extends State<plants> {
         ],
       ),
     );
-
-}
+  }
 
   /// Get from gallery
   _getFromGallery() async {
@@ -242,8 +244,7 @@ class _plantsState extends State<plants> {
       maxHeight: 1800,
     );
     if (pickedFile != null) {
-      setState(()  {
-
+      setState(() {
         imageFile = File(pickedFile.path);
         _filename = basename(imageFile!.path);
         final _nameWithoutExtension = basenameWithoutExtension(imageFile!.path);
@@ -272,5 +273,4 @@ class _plantsState extends State<plants> {
       });
     }
   }
-
 }
