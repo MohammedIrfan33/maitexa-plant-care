@@ -2,17 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_care/admin/admin%20crop%20add.dart';
 import 'package:plant_care/admin/crop%20description/apple.dart';
-import 'package:plant_care/admin/crop%20description/grapes.dart';
-import 'package:plant_care/admin/crop%20description/potato.dart';
-import 'package:plant_care/admin/crop%20description/pumpkin.dart';
-import 'package:plant_care/admin/crop%20description/strawberry.dart';
-import 'package:plant_care/admin/crop%20description/tomato.dart';
-import 'package:plant_care/admin/crop%20description/watermelon.dart';
-
-import 'crop description/carrot.dart';
 
 class cropdesc_admin extends StatefulWidget {
-  const cropdesc_admin ({Key? key}) : super(key: key);
+  const cropdesc_admin({Key? key}) : super(key: key);
 
   @override
   State<cropdesc_admin> createState() => _cropdesc_adminState();
@@ -26,78 +18,68 @@ class _cropdesc_adminState extends State<cropdesc_admin> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Crops"),
-        backgroundColor: Colors.teal[900],),
-      floatingActionButton:
-      Padding(
-        padding: const EdgeInsets.only(left: 300),
-        child: Row(
-            children: [
-              FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => add(),
-                      ));
-                },
-                backgroundColor: Colors.teal[900],
-                child: Icon(Icons.add),
-              ),
-
-            ]),),
+        backgroundColor: Colors.teal[900],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const add(),
+              ));
+        },
+        backgroundColor: Colors.teal[900],
+        child: const Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child:StreamBuilder(
-        stream: crop.snapshots(),
-    builder: (BuildContext context,
-    AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-    if (streamSnapshot.hasData) {
-     return GridView.builder(
-        itemCount: streamSnapshot.data!.docs.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 4.0,
-            mainAxisSpacing: 4.0
-        ),
-        itemBuilder: (BuildContext context, int index) {
+        child: StreamBuilder(
+          stream: crop.snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+            if (streamSnapshot.hasData) {
+              return GridView.builder(
+                itemCount: streamSnapshot.data!.docs.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 4.0,
+                    mainAxisSpacing: 4.0),
+                itemBuilder: (BuildContext context, int index) {
+                  final DocumentSnapshot documentSnapshot =
+                      streamSnapshot.data!.docs[index];
 
-          final DocumentSnapshot documentSnapshot =
-          streamSnapshot.data!.docs[index];
-          print("documentSnapshot${documentSnapshot.id}");
-          return InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => apple(
-                    documentSnapshot.id,)));
-            },
-            child: Container(
-              child: Card(
-                elevation: 10,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Image.network(
-                        documentSnapshot['image'],
-                        height: 99,
-                        width: 100,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30),
-                      child: Text(
-                        documentSnapshot['name'],
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-          /* children: <Widget>[
+                  return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => apple(
+                                      documentSnapshot.id,
+                                    )));
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Image.network(
+                                documentSnapshot['image'],
+                                width: double.maxFinite,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                documentSnapshot['name'],
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ));
+                  /* children: <Widget>[
               InkWell(
                 onTap: () {
                   Navigator.push(context,
@@ -338,12 +320,13 @@ class _cropdesc_adminState extends State<cropdesc_admin> {
                 ),
               ),
             ]);*/
-        },);
-    }
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-    },
+                },
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
       ),
     );

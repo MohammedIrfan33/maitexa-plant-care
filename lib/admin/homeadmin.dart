@@ -5,15 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:plant_care/login.dart';
 import 'package:plant_care/account.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:plant_care/admin/admin%20add%20disease.dart';
-import 'package:plant_care/admin/admin%20crop%20add.dart';
 import 'package:plant_care/admin/admin%20crop%20desc.dart';
 import 'package:plant_care/admin/notify.dart';
 import 'package:plant_care/admin/viewdisease.dart';
 
 import '../agriculture department/maindash agri.dart';
-import 'crop description/crop description.dart';
 
 class Homeadmin extends StatefulWidget {
   @override
@@ -44,7 +40,7 @@ class _HomeadminState extends State<Homeadmin> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal[900],
-        title: Text("Admin"),
+        title: const Text("Admin"),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
           bottomRight: Radius.circular(25),
@@ -90,7 +86,7 @@ class _HomeadminState extends State<Homeadmin> {
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MainDash2()));
+                      MaterialPageRoute(builder: (context) => const MainDash2()));
                 },
                 child: Card(
                   elevation: 10,
@@ -103,13 +99,13 @@ class _HomeadminState extends State<Homeadmin> {
 
                         fit: BoxFit.cover,
                       ),
-                      SizedBox(height: 10,),
-                      Text(
+                     const SizedBox(height: 10,),
+                     const  Text(
                         'Manage',
                         style: TextStyle(
                             fontSize: 13, fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      const Text(
                         'Agriculture Department',
                         style: TextStyle(
                             fontSize: 13, fontWeight: FontWeight.bold),
@@ -123,21 +119,21 @@ class _HomeadminState extends State<Homeadmin> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => cropdesc_admin()));
+                          builder: (context) => const cropdesc_admin()));
                 },
                 child: Card(
                   elevation: 10,
                   child: Column(
                     children: [
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
                       Image.asset(
                         'images/crop.jpg',
                         height: 80,
 
                         fit: BoxFit.cover,
                       ),
-                      SizedBox(height: 10,),
-                      Text(
+                      const SizedBox(height: 10,),
+                      const Text(
                         'Crop Description',
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
@@ -155,7 +151,7 @@ class _HomeadminState extends State<Homeadmin> {
                   elevation: 10,
                   child: Column(
                     children: [
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
                       Image.asset(
                         'images/disease.png',
                         height: 80,

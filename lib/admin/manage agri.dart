@@ -89,87 +89,148 @@ class _agri_detailsState extends State<agri_details> {
                   final appointment =
                       appointments[index].data() as Map<String, dynamic>;
                   final appointmentId = appointments[index].id;
-                  final patientName = appointment['name'];
-                  final patientPhone = appointment['phone'];
-                  final isAccepted = appointment['isAccepted'];
-                  final isRejected = appointment['isRejected'];
+                  final name = appointment['name'];
+                  final phone = appointment['phone'];
+
                   final status = appointment['status'];
+                  final imageUrl = appointment['image'];
 
                   return Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 120,
-                          margin: EdgeInsets.all(10),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.black)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Name:" + patientName,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "Phone:" + patientPhone,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 90,
-                                      height: 40,
-                                      color: Colors.green[900],
-                                      child: TextButton(
-                                        onPressed: () {
-                                          acceptAppointment(appointmentId);
-                                        },
-                                        child: Text(
-                                          status == 'accepted'
-                                              ? 'Accepted'
-                                              : 'Accept',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      width: 90,
-                                      height: 40,
-                                      color: Colors.green[900],
-                                      child: TextButton(
-                                        onPressed: () {
-                                          rejectAppointment(appointmentId);
-                                          deleteUser(appointmentId);
-                                        },
-                                        child: Text(
-                                          status == 'rejected'
-                                              ? 'Rejected'
-                                              : 'Reject ',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                    margin: const EdgeInsets.all(10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Image(
+                            image: NetworkImage(imageUrl),
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
                           ),
-                        ),
-                      ],
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Name: $name",
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Phone: $phone",
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 90,
+                                height: 40,
+                                color: Colors.green[900],
+                                child: TextButton(
+                                  onPressed: () {
+                                    acceptAppointment(appointmentId);
+                                  },
+                                  child: Text(
+                                    status == 'accepted'
+                                        ? 'Accepted'
+                                        : 'Accept',
+                                    style: const TextStyle(
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: 90,
+                                height: 40,
+                                color: Colors.green[900],
+                                child: TextButton(
+                                  onPressed: () {
+                                    rejectAppointment(appointmentId);
+                                    deleteUser(appointmentId);
+                                  },
+                                  child: Text(
+                                    status == 'rejected'
+                                        ? 'Rejected'
+                                        : 'Reject ',
+                                    style: const TextStyle(
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: 90,
+                                height: 40,
+                                color: Colors.green[900],
+                                child: TextButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        contentPadding: EdgeInsets.zero,
+                                        content: Stack(
+                                          children: [
+                                            Image.network(
+                                              imageUrl,
+                                              fit: BoxFit.fill,
+                                              ),
+                                            Positioned(
+                                              top: 0,
+                                              right: 0,
+                                                child: IconButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              icon: Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.circle
+                                                ),
+                                                
+                                                child: const Icon(
+                                                  
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                  size: 20,
+                                                  ),
+                                              ),
+                                            ))
+                                          ],
+
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'certificate',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -177,7 +238,7 @@ class _agri_detailsState extends State<agri_details> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           },
         )

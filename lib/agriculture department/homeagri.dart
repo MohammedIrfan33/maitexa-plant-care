@@ -5,7 +5,7 @@ import 'package:plant_care/agriculture%20department/viewmessage.dart';
 
 import '../home public.dart';
 import '../user/chat.dart';
-import 'chat.dart';
+import 'chat_list.dart';
 
 class Homeagri extends StatefulWidget {
   @override
@@ -122,7 +122,7 @@ class _HomeagriState extends State<Homeagri> {
               borderRadius: BorderRadius.circular(16.0),
             ),
           ),*/
-          Padding(
+          const Padding(
             padding: const EdgeInsets.only(left: 10, top: 30),
             child: Text(
               "Choose your way!",
@@ -133,13 +133,13 @@ class _HomeagriState extends State<Homeagri> {
             padding: const EdgeInsets.only(top: 30, left: 10),
             child: ElevatedButton.icon(
               onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Admin())),
+                  MaterialPageRoute(builder: (context) => const AgriChatListScreen())),
               icon: const Icon(
                 Icons.chat,
                 color: Colors.white,
                 size: 50,
               ),
-              label: Text(
+              label:const  Text(
                 "Chat",
                 style: TextStyle(fontSize: 25, color: Colors.white),
               ),

@@ -1,88 +1,161 @@
 import 'package:flutter/material.dart';
-class admin extends StatefulWidget {
-  const admin({Key? key}) : super(key: key);
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key, required this.agriId});
+
+  final String agriId;
 
   @override
-  State<admin> createState() => _adminState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _adminState extends State<admin> {
+class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _messageController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Stream<QuerySnapshot>? _messageStream;
+
+  QueryDocumentSnapshot<Object>? selctedAgri;
+
+  String? specialication;
+  bool loading = false;
+
+  var usersChatList = [];
+
+  User? currentUser;
+
+  @override
+  void initState() {
+    currentUser = _auth.currentUser;
+
+    _messageStream = _firestore
+        .collection('chats')
+        .where('userId', isEqualTo: currentUser?.uid)
+        .where('agriId', isEqualTo: widget.agriId)
+        .orderBy('time', descending: true)
+        .snapshots();
+
+    super.initState();
+  }
+
+  Future<void> _sendMessage() async {
+    final String messageText = _messageController.text.trim();
+    if (messageText.isEmpty) return;
+
+    if (currentUser == null) return;
+
+    await _firestore.collection('chats').add({
+      'userId': currentUser?.uid,
+      'agriId': widget.agriId,
+      'senderId': currentUser?.uid,
+      'messageText': messageText,
+      'time': DateTime.now().millisecondsSinceEpoch,
+    });
+
+    _messageController.clear();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Chat "),
-        backgroundColor: Colors.teal[900],
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(25),
-              bottomLeft: Radius.circular(25),
-            )),
-
+        title: const Text('Chat'),
+        backgroundColor: Colors.green[900],
       ),
-      body: Column(
+      body: loading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: _messageStream,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
 
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [ Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.topRight,
+                      final messages = snapshot.data!.docs;
 
-              child:Container(
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final String senderId =
+                              messages[index].get('senderId');
 
-                width: 100,
-                height:60,
-                child: TextField(
-                  decoration: InputDecoration(enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)
-                  ),
-                    hintText: "hi",
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            alignment: senderId == currentUser?.uid
+                                ? Alignment.bottomRight
+                                : Alignment.centerLeft,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 2.5,
+                              child: ListTile(
+                                title: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 14),
+                                  decoration: BoxDecoration(
+                                    color: senderId == currentUser?.uid
+                                        ? Colors.green[900]
+                                        : Colors.grey,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    messages[index].get('messageText'),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                subtitle:
+                                    Text(getTime(messages[index].get('time'))),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
-              ),
-            ),
-          ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.topLeft,
-
-                child:Container(
-
-                  width: 100,
-                  height:60,
-                  child: TextField(
-                    decoration: InputDecoration(enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                      hintText: "hello ! how can i help you",
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _messageController,
+                          decoration: const InputDecoration(
+                            hintText: 'Enter a message...',
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: _sendMessage,
+                      ),
+                    ],
                   ),
                 ),
-              ),
+              ],
             ),
-
-
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 450),
-                child: new Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border:OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      suffixIcon: Icon(Icons.send,color: Colors.teal[900],),
-                      hintText: "Type here",
-                    ),
-                  ),
-                ),
-              ),
-
-
-            ),
-          ]),
     );
   }
+}
+
+String getTime(int milliseconds) {
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(milliseconds);
+  String formattedTime = DateFormat('h:mm a').format(dateTime);
+  return formattedTime;
 }

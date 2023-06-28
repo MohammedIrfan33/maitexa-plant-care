@@ -41,7 +41,7 @@ class AuthenticationHelper {
       return e.message;
     }
   }
-  Future<String?> Signupagri({required String email, required String password,required String name,required String location,required String phone}) async {
+  Future<String?> Signupagri({required imageUrl,required String email, required String password,required String name,required String location,required String phone}) async {
     try {
       UserCredential result= await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -54,11 +54,12 @@ class AuthenticationHelper {
         'location':location,
         'isAccepted':false,
         'isRejected':true,
-        'status':''
+        'status':'',
+        'image': imageUrl
 
       });
-      print("user data${user}");
-      await _db.collection('login').doc(user!.uid).set({
+  
+      await _db.collection('login').doc(user.uid).set({
         'email': email,
         'password': password,
         'role':"agriculture",

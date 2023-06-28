@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:plant_care/login.dart';
 import 'package:plant_care/firebase/authentication.dart';
 
@@ -10,7 +14,7 @@ class Signupagri extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: <Widget>[
           // logo
           Column(
@@ -118,15 +122,54 @@ class _SignupFormState extends State<SignupForm> {
 
   final pass = new TextEditingController();
 
+
+  
+
   @override
   Widget build(BuildContext context) {
-    var border = OutlineInputBorder(
+    var border  = const OutlineInputBorder(
       borderRadius: BorderRadius.all(
-        const Radius.circular(100.0),
+         Radius.circular(100.0),
       ),
     );
 
-    var space = SizedBox(height: 20);
+    var space = const SizedBox(height: 20);
+
+
+    Future<void> _showChoiceDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Choose from"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    child: const Text("Gallery"),
+                    onTap: () {
+                      _getFromGallery();
+                      Navigator.pop(context);
+                      //  _openGallery(context);
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  const Padding(padding: EdgeInsets.all(0.0)),
+                  GestureDetector(
+                    child: const Text("Camera"),
+                    onTap: () {
+                      _getFromCamera();
+
+                      Navigator.pop(context);
+                      //   _openCamera(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
@@ -259,13 +302,64 @@ class _SignupFormState extends State<SignupForm> {
             controller: phoneController,
             decoration: InputDecoration(
               labelText: ' phone',
-              prefixIcon: Icon(Icons.phone),
+              prefixIcon: const Icon(Icons.phone),
               border: border,
             ),
             onSaved: (val) {
               phone = val;
             },
           ),
+          Container(
+        margin:const EdgeInsets.only(top: 20),
+        /* decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('images/bg.jpg')
+                      )
+                    ),*/
+        child: imageFile == null
+            ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                const Text('Upload image'),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal[900]
+                  ),
+                  onPressed: () {
+                    
+                    _showChoiceDialog(context);
+                  },
+                  child: const Text("Upload Image"),
+                ),
+                
+              ],
+            )
+            : Column(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(imageFile!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal[900]
+              ),
+              onPressed: () {
+               
+                _showChoiceDialog(context);
+                },
+              child: const Text("Change Image"),
+            ),
+          ],
+        ),
+      ),
           Row(
             children: <Widget>[
               Checkbox(
@@ -276,7 +370,7 @@ class _SignupFormState extends State<SignupForm> {
                 },
                 value: agree,
               ),
-              Flexible(
+              const Flexible(
                 child: Text(
                     'By creating account, I agree to Terms & Conditions and Privacy Policy.'),
               ),
@@ -292,7 +386,9 @@ class _SignupFormState extends State<SignupForm> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
+                if (_formKey.currentState!.validate() && imageUrl != null) {
+
+                  
                   setState(() {
                     isLoading = true;
                   });
@@ -302,7 +398,9 @@ class _SignupFormState extends State<SignupForm> {
                           password: passwordController.text,
                           name: nameController.text,
                           location: locationController.text,
-                          phone: phoneController.text)
+                          phone: phoneController.text,
+                          imageUrl: imageUrl
+                          )
                       .then((result) {
                     if (result == null) {
                       Navigator.pushReplacement(context,
@@ -311,7 +409,7 @@ class _SignupFormState extends State<SignupForm> {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
                           result,
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ));
                     }
@@ -325,15 +423,17 @@ class _SignupFormState extends State<SignupForm> {
                     isLoading = false;
                   });
 
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Something went wrong')));
+
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Some fields are not valid')));
                 }
               },
               style: ElevatedButton.styleFrom(
-                  primary: Colors.teal[900],
-                  shape: RoundedRectangleBorder(
+                  backgroundColor: Colors.teal[900],
+                  shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(24.0)))),
-              child: isLoading ? CircularProgressIndicator() :   Text(
+              child: isLoading ? const CircularProgressIndicator(color: Colors.white,) :  const Text(
                 'Sign Up',
                 style: TextStyle(color: Colors.white),
               ),
@@ -342,5 +442,55 @@ class _SignupFormState extends State<SignupForm> {
         ],
       ),
     );
+  }
+
+  File? imageFile;
+  File? file;
+  String ? imageUrl;
+
+  /// Get from gallery
+  Future<void> _getFromGallery() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+   
+    if (file != null) {
+      setState(() {
+        imageFile = File(file.path);
+      });
+    }
+    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
+    Reference refrenceroot =  FirebaseStorage.instance.ref();
+    Reference referenceDirImages = refrenceroot.child('images');
+
+    Reference referenceImageToUpload =  referenceDirImages.child(uniquename);
+
+    try {
+      await referenceImageToUpload.putFile(File(file!.path));
+      imageUrl = await referenceImageToUpload.getDownloadURL();
+    } catch (error) {}
+  }
+
+  /// Get from Camera
+  Future<void> _getFromCamera() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: ImageSource.camera);
+    
+    if (file != null) {
+      setState(() {
+        imageFile = File(file.path);
+      });
+    }
+    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
+    Reference refrenceroot = FirebaseStorage.instance.ref();
+    Reference referenceDirImages = refrenceroot.child('images');
+
+    Reference referenceImageToUpload = referenceDirImages.child(uniquename);
+
+    try {
+      await referenceImageToUpload.putFile(File(file!.path));
+      imageUrl = await referenceImageToUpload.getDownloadURL();
+    } catch (error) {}
+
+  
   }
 }

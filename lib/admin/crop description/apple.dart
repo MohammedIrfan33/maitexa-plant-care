@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:plant_care/admin/edit_crop.dart';
 import 'package:plant_care/admin/homeadmin.dart';
-
 
 class apple extends StatefulWidget {
   final String id;
@@ -13,17 +13,28 @@ class apple extends StatefulWidget {
 }
 
 class _appleState extends State<apple> {
-  String fullname='';
-  String climate='';
-  String image='';
-  String orgin='';
-  String sname='';
-  String soil='';
+  String fullname = '';
+  String climate = '';
+  String image = '';
+  String orgin = '';
+  String sname = '';
+  String soil = '';
+
+  bool loading = false;
   void fetchUserData() {
-   String ids= widget.id;
-    FirebaseFirestore.instance.collection('crop').doc(ids).get().then((DocumentSnapshot documentSnapshot) {
+
+    setState(() {
+      loading = true;
+    });
+    String ids = widget.id;
+    FirebaseFirestore.instance
+        .collection('crop')
+        .doc(ids)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
 
         setState(() {
           fullname = data['name'] as String;
@@ -33,33 +44,141 @@ class _appleState extends State<apple> {
           sname = data['scientificname'] as String;
           soil = data['soil'] as String;
 
+          loading =false;
         });
-
       } else {
-        print('User document does not exist');
+        
+        setState(() {
+          
+          loading =false;
+        });
       }
-    }).catchError((error) {
-      print('Failed to fetch user data: $error');
-    });
+    }).catchError((error) {});
   }
+
+  deleteDoc() async{
+
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      await FirebaseFirestore.instance.collection('crop').doc(widget.id).delete();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully deleted')));
+      Navigator.pop(context); // Navigate back after deletion
+    } catch (error) {
+      print('Error deleting document: $error');
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to delete')));
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchUserData();
   }
+
   @override
   Widget build(BuildContext context) {
+    const divider = Divider(
+      height: 30,
+      thickness: .4,
+      color: Colors.grey,
+      indent: 14,
+      endIndent: 14,
+    );
     return Scaffold(
       backgroundColor: Colors.white,
+      bottomSheet: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal[900]),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditCrop(
+                            name: fullname,
+                            scName: sname,
+                            orginName: orgin,
+                            soilname: sname,
+                            cliHumdity: climate,
+                            
+                            image: image,
+                            id: widget.id,
+                          ),
+                        ));
+                  },
+                  child: const Text('Edit')),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal[900]),
+                  onPressed: () {
+
+                    showDialog(
+                      context: context, builder: (context) => 
+                      AlertDialog(
+                        content: const Text('Are you sure?'),
+                        actions: [
+                          TextButton(onPressed: () {
+
+                             deleteDoc();
+
+                             Navigator.pop(context);
+
+
+                            
+                          }, child: Text(
+                            'Yes',
+                            style: TextStyle(
+                              color: Colors.teal[900]
+                            ),
+                            )),
+
+                          TextButton(onPressed: () {
+                            Navigator.pop(context);
+                            
+                          }, child: Text(
+                            'No',
+                            style: TextStyle(
+                              color: Colors.teal[900]
+                            ),
+                            ))
+                        ],
+                        
+                        ),
+                      );
+
+
+
+                  },
+                  child: const Text('Delete')),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.teal[900],
-        title: Text("Description"),
+        title: const Text("Description"),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(25),
-              bottomLeft: Radius.circular(25),
-            )),
+          bottomRight: Radius.circular(25),
+          bottomLeft: Radius.circular(25),
+        )),
         actions: [
           IconButton(
               onPressed: () {
@@ -69,128 +188,89 @@ class _appleState extends State<apple> {
                       builder: (context) => Homeadmin(),
                     ));
               },
-              icon: Icon(Icons.home))
+              icon: const Icon(Icons.home))
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                  children: [
-                    Text(
-                      'Crop Name',
-                      style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      ':',
-                      style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                     fullname,
-                      style:
-                      TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
+      body: loading ?  Center(child: CircularProgressIndicator(color: Colors.teal[900],),) :SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Card(
+            elevation: 10,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
-                    'Scientific Name',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  const SizedBox(
+                    height: 20,
                   ),
-                  SizedBox(
-                    width: 22,
+                  Image(
+                    image: NetworkImage(image),
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.fill,
                   ),
-                  Text(
-                    ':',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  const SizedBox(
+                    height: 30,
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    sname,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  RowText(lefttext: 'Crop name', rightText: fullname),
+                  divider,
+                  RowText(lefttext: 'Scientific  name', rightText: sname),
+                  divider,
+                  RowText(lefttext: 'Climet', rightText: climate),
+                  divider,
+                  RowText(lefttext: 'Soil', rightText: soil),
+                  divider,
+                  RowText(lefttext: 'Orgin', rightText: orgin),
+                  const SizedBox(
+                    height: 20,
                   ),
                 ],
               ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                'Origin',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                orgin,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-              ),
-
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                'Suitable Soil',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                soil,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-              ),
-
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Climate and Humidity',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                climate,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-              ),
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class RowText extends StatelessWidget {
+  const RowText({
+    super.key,
+    required this.lefttext,
+    required this.rightText,
+  });
+
+  final String lefttext;
+  final String rightText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              lefttext,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              rightText,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54),
+            ),
+          ),
+        ],
       ),
     );
   }

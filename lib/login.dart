@@ -129,6 +129,8 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  bool isloading = false;
+
   String? email;
   String? password;
 
@@ -136,6 +138,11 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> signIn(String email, String password) async {
     try {
+
+      setState(() {
+        
+        isloading = true;
+      });
       // Authenticate user with email and password
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
@@ -206,7 +213,7 @@ class _LoginFormState extends State<LoginForm> {
           // Document exists, but data is null
         }
       } else {
-        ScaffoldMessenger.of(context as BuildContext).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
             "Document doesn't exist, handle appropriately",
             style: TextStyle(fontSize: 16),
@@ -214,9 +221,16 @@ class _LoginFormState extends State<LoginForm> {
         ));
         // Document doesn't exist, handle appropriately
       }
+      setState(() {
+        isloading = false;
+      });
     } catch (e) {
+
+        setState(() {
+          isloading = false;
+        });
       // Error occurred during login
-      print('Login error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Somthing went wrong')));
       // Handle error
     }
   }
@@ -261,10 +275,10 @@ class _LoginFormState extends State<LoginForm> {
             // initialValue: 'Input text',
             decoration: InputDecoration(
               labelText: 'Password',
-              prefixIcon: Icon(Icons.lock_outline),
-              border: OutlineInputBorder(
+              prefixIcon: const Icon(Icons.lock_outline),
+              border: const  OutlineInputBorder(
                 borderRadius: BorderRadius.all(
-                  const Radius.circular(100.0),
+                   Radius.circular(100.0),
                 ),
               ),
               suffixIcon: GestureDetector(
@@ -290,7 +304,7 @@ class _LoginFormState extends State<LoginForm> {
             },
           ),
 
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
 
           SizedBox(
             height: 54,
@@ -347,11 +361,11 @@ class _LoginFormState extends State<LoginForm> {
                   }
                 });*/
               },
-              style: ElevatedButton.styleFrom(
-                  primary: Colors.teal[900],
-                  shape: RoundedRectangleBorder(
+              style:  ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal[900],
+                  shape:const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(24.0)))),
-              child: Text(
+              child:isloading? const CircularProgressIndicator(color: Colors.white,) : const  Text(
                 'Login',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),

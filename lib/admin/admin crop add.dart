@@ -21,12 +21,17 @@ class _addState extends State<add> {
   late String storedImage;
   final CollectionReference crops = FirebaseFirestore.instance
       .collection('crop');
+
+
   String imageUrl = '';
   TextEditingController cropname= TextEditingController();
   TextEditingController sciname= TextEditingController();
   TextEditingController orginname= TextEditingController();
   TextEditingController soil= TextEditingController();
   TextEditingController climate= TextEditingController();
+ 
+
+
   Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -75,7 +80,10 @@ class _addState extends State<add> {
        "image": image,
        "orgin":origin,
      "scientificname":sc,
-     "soil":soi
+     "soil":soi,
+     
+     
+
      });
      Navigator.push(context, MaterialPageRoute(builder: (context)=>cropdesc_admin()));
      cropname.text = '';
@@ -93,53 +101,8 @@ class _addState extends State<add> {
     backgroundColor: Colors.teal[900],),
     body: ListView(
     children: [
-      SizedBox(height: 20,),
-      Container(
-        /* decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('images/bg.jpg')
-                      )
-                    ),*/
-        child: imageFile == null
-            ? Container(
-          child: Column(
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  //    _getFromGallery();
-                  _showChoiceDialog(context);
-                },
-                child: Text("Upload Image"),
-              ),
-              Container(
-                height: 40.0,
-              ),
-            ],
-          ),
-        )
-            : Row(
-          children: [
-            Container(
-              width: 45,
-              height: 45,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(imageFile!),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //    _getFromGallery();
-                _showChoiceDialog(context);
-                },
-              child: Text("Upload Image"),
-            ),
-          ],
-        ),
-      ),
+      const SizedBox(height: 20,),
+      
      /* Padding(
         padding: const EdgeInsets.only(left: 50,right: 50,),
         child: ElevatedButton(
@@ -219,7 +182,7 @@ class _addState extends State<add> {
       padding: const EdgeInsets.all(15),
       child: TextField(
         controller: cropname,
-      decoration: InputDecoration(
+      decoration:const  InputDecoration(
       border: OutlineInputBorder(),
         hintText: 'Enter crop name',
       ),
@@ -229,7 +192,7 @@ class _addState extends State<add> {
         padding: const EdgeInsets.all(15),
         child: TextField(
           controller: sciname,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter scientific name',
           ),
@@ -239,7 +202,7 @@ class _addState extends State<add> {
         padding: const EdgeInsets.all(15),
         child: TextField(
           controller: orginname,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter origin',
           ),
@@ -249,7 +212,7 @@ class _addState extends State<add> {
         padding: const EdgeInsets.all(15),
         child: TextField(
           controller: soil,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter suitable soil',
           ),
@@ -259,17 +222,69 @@ class _addState extends State<add> {
         padding: const EdgeInsets.all(15),
         child: TextField(
           controller: climate,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Enter climate and humidity',
           ),
+        ),
+      ),
+
+      Container(
+        margin:const EdgeInsets.only(top: 20),
+        /* decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('images/bg.jpg')
+                      )
+                    ),*/
+        child: imageFile == null
+            ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                const Text('Upload image'),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal[900]
+                  ),
+                  onPressed: () {
+                    
+                    _showChoiceDialog(context);
+                  },
+                  child: const Text("Upload Image"),
+                ),
+                
+              ],
+            )
+            : Column(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(imageFile!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal[900]
+              ),
+              onPressed: () {
+               
+                _showChoiceDialog(context);
+                },
+              child: const Text("Change Image"),
+            ),
+          ],
         ),
       ),
       Padding(
         padding: const EdgeInsets.all( 50),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.teal[900],
+            backgroundColor: Colors.teal[900],
           ),
           onPressed: () {
             addcrop();
@@ -299,7 +314,7 @@ class _addState extends State<add> {
   Future<void> _getFromGallery() async {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-    print('${file?.path}');
+   
     if (file != null) {
       setState(() {
         imageFile = File(file.path);
@@ -321,7 +336,7 @@ class _addState extends State<add> {
   Future<void> _getFromCamera() async {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.camera);
-    print('${file?.path}');
+    
     if (file != null) {
       setState(() {
         imageFile = File(file.path);
