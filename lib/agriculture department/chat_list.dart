@@ -37,6 +37,9 @@ class _AgriChatListScreenState extends State<AgriChatListScreen> {
           .collection('chats')
           .where('agriId', isEqualTo: currentUser?.uid);
 
+
+          print('dataaaaaaa$data');
+
       final usersDatalist = FirebaseFirestore.instance.collection('user_Tb');
 
       await data.get().then((QuerySnapshot querySnapshot) async {
@@ -58,7 +61,7 @@ class _AgriChatListScreenState extends State<AgriChatListScreen> {
       });
 
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Somthing went wrong')));
+          .showSnackBar( SnackBar(content: Text(e.toString())));
     }
   }
   @override
@@ -72,7 +75,7 @@ class _AgriChatListScreenState extends State<AgriChatListScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Padding(
+          : usersChatList.isEmpty ?const Center(child: Text('No Chats'),)  :Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
             child: ListView.separated(
               

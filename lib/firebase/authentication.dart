@@ -1,20 +1,28 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path/path.dart';
 import 'package:plant_care/admin/homeadmin.dart';
 import 'package:plant_care/agriculture%20department/homeagri.dart';
-import 'package:plant_care/login.dart';
+import 'package:plant_care/firebase/notification.dart';
+
 import 'package:plant_care/user/homepage%20user.dart';
 
 class AuthenticationHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final notification = FirebaseNotificatios();
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   get user => _auth.currentUser;
 
 //SIGN UP METHOD
-  Future<String?> signUp({required String email, required String password,required String name,required String phone,}) async {
+  Future<String?> signUp({
+    required String email,
+    required String password,
+    required String name,
+    required String phone,
+  }) async {
     try {
       UserCredential result= await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -29,42 +37,61 @@ class AuthenticationHelper {
         'status':''
 
       });
-      print("user data${user}");
+
       await _db.collection('login').doc(user!.uid).set({
         'email': email,
         'password': password,
         'role':"user",
         'isAccepted' : false
       });
+      
+
+      final fcmTo = await notification.getAdminToken();
+
+      await notification.sendNotificationToAdmin(
+          deviceToken: fcmTo, body: 'New user registered!!', title: 'New User');
+
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
-  Future<String?> Signupagri({required imageUrl,required String email, required String password,required String name,required String location,required String phone}) async {
+
+  Future<String?> Signupagri(
+      {required imageUrl,
+      required String email,
+      required String password,
+      required String name,
+      required String location,
+      required String phone}) async {
     try {
-      UserCredential result= await _auth.createUserWithEmailAndPassword(
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      User? user=result.user;
+      User? user = result.user;
       await _db.collection('agriculture').doc(user!.uid).set({
         'name': name,
         'phone': phone,
-        'location':location,
-        'isAccepted':false,
-        'isRejected':true,
-        'status':'',
+        'location': location,
+        'isAccepted': false,
+        'isRejected': true,
+        'status': '',
         'image': imageUrl
-
       });
-  
+
       await _db.collection('login').doc(user.uid).set({
         'email': email,
         'password': password,
-        'role':"agriculture",
+        'role': "agriculture",
         'isAccepted': false,
       });
+
+      final fcmTo = await notification.getAdminToken();
+
+      await notification.sendNotificationToAdmin(
+          deviceToken: fcmTo, body: 'New Agriculture User registered!!', title: 'New Agriculture');
+
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -91,7 +118,6 @@ class AuthenticationHelper {
   }
 */
 
-
   Future<void> signIn(String email, String password) async {
     try {
       // Authenticate user with email and password
@@ -109,13 +135,12 @@ class AuthenticationHelper {
           .get();
 
       // Check if the document exists and retrieve the 'role' field
-      if (snapshot.exists  ) {
+      if (snapshot.exists) {
         Map<String, dynamic>? userData =
-        snapshot.data() as Map<String, dynamic>?;
+            snapshot.data() as Map<String, dynamic>?;
         if (userData != null && userData['role'] != null) {
-         String role = userData['role'] as String;
+          String role = userData['role'] as String;
           print("role$role");
-
 
           if (role == 'user') {
             Navigator.pushReplacement(
@@ -128,7 +153,7 @@ class AuthenticationHelper {
             Navigator.pushReplacement(
               context as BuildContext,
               MaterialPageRoute(
-                builder: (context) =>Homeagri (),
+                builder: (context) => Homeagri(),
               ),
             );
           } else if (role == 'admin') {
@@ -143,7 +168,8 @@ class AuthenticationHelper {
               content: Text("Something wronng".toString()),
               duration: Duration(seconds: 2),
             );
-            ScaffoldMessenger.of(context as BuildContext).showSnackBar(snackBar);
+            ScaffoldMessenger.of(context as BuildContext)
+                .showSnackBar(snackBar);
 
             // Unknown role, handle appropriately
             print('Unknown role');
@@ -172,17 +198,17 @@ class AuthenticationHelper {
       // Handle error
     }
   }
+
 //read
-   read() async {
+  read() async {
     DocumentSnapshot documentSnapshot;
     try {
-      documentSnapshot = await   _db.collection('user_Tb').doc(user!.uid).get();
+      documentSnapshot = await _db.collection('user_Tb').doc(user!.uid).get();
       print(documentSnapshot.data());
     } catch (e) {
       print(e);
     }
   }
-
 
   //SIGN OUT METHOD
   Future<void> signOut() async {

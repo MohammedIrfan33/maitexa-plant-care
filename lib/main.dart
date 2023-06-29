@@ -11,6 +11,8 @@ Future main() async {
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+  await messaging.getInitialMessage();
+
 NotificationSettings settings = await messaging.requestPermission(
   alert: true,
   announcement: false,
@@ -20,8 +22,8 @@ NotificationSettings settings = await messaging.requestPermission(
   provisional: false,
   sound: true,
 );
-  final fcmToken = await messaging.getToken();
-  print('fcmToken $fcmToken');
+  
+  
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: WelcomePage(),

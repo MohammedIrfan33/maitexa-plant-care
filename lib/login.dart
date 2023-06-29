@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_care/accounts.dart';
 import 'package:plant_care/admin/homeadmin.dart';
@@ -129,6 +130,8 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  
+
   bool isloading = false;
 
   String? email;
@@ -137,6 +140,10 @@ class _LoginFormState extends State<LoginForm> {
   bool _obscureText = true;
 
   Future<void> signIn(String email, String password) async {
+
+    final fcm = await FirebaseMessaging.instance.getToken();
+
+
     try {
 
       setState(() {
@@ -157,6 +164,8 @@ class _LoginFormState extends State<LoginForm> {
           .doc(userId)
           .get();
 
+      
+
       // Check if the document exists and retrieve the 'role' field
       if (snapshot.exists  ) {
         Map<String, dynamic>? userData =
@@ -164,7 +173,7 @@ class _LoginFormState extends State<LoginForm> {
         if (userData != null && userData['role'] != null) {
           String role = userData['role'] as String;
           bool  isAccepted = userData['isAccepted'] ;
-          print("role$isAccepted");
+        
 
           if (role == 'user') {
            isAccepted ?    Navigator.pushReplacement(
@@ -184,6 +193,19 @@ class _LoginFormState extends State<LoginForm> {
               ),
             )  : ScaffoldMessenger.of(context as BuildContext).showSnackBar(const SnackBar(content:Text('Admin not Verified')));
           }else if(role ==  'admin'){
+           
+
+            final setToken =  FirebaseFirestore.instance
+          .collection('admin').doc(userId);
+            await  setToken.update(
+              {
+                
+                'token' : fcm
+              }
+            );
+           
+
+
 
              Navigator.pushReplacement(
                     context,

@@ -3,64 +3,54 @@ import 'package:flutter/material.dart';
 import 'package:plant_care/login.dart';
 import 'package:plant_care/firebase/authentication.dart';
 
-import 'homepage user.dart';
 
 
 
 class Signup extends StatelessWidget {
+  const Signup({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        children: <Widget>[
+        children: <Widget> [
           // logo
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top:50),
-                child: Text(
-                  'Join PlantCare Community',
-                  style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold
-                  ),
-                ),
+          const Padding(
+            padding: EdgeInsets.only(top:50),
+            child: Text(
+              'Join PlantCare Community',
+              style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: Text(
-                  'Create Your Account',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              ],
+            ),
+          ),
+          const Padding(
+            padding:  EdgeInsets.only(bottom: 30),
+            child: Text(
+              'Create Your Account',
+              style: TextStyle(fontSize: 15),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SignupForm(),
           ),
 
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: Text('Already here  ?',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18)),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(' Get Logged in Now!',
-                          style: TextStyle(fontSize: 18, color: Colors.green)),
-                    )
-                  ],
-                )
-              ],
-            ),
+          Row(
+            children: <Widget>[
+              const  Padding(
+                padding:  EdgeInsets.only(left: 50),
+                child: Text('Already here  ?',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18)),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(' Get Logged in Now!',
+                    style: TextStyle(fontSize: 18, color: Colors.green)),
+              )
+            ],
           ),
         ],
       ),
@@ -204,9 +194,9 @@ class _SignupFormState extends State<SignupForm> {
             obscureText: !_obscureText,
             validator: (value) {
               if (validatePassword(value!)) {
-                print('Password is valid!');
+                
               } else {
-                print('Password should have at least six characters.');
+                
               }
               if (value!.isEmpty) {
                 return 'Please enter some text';
