@@ -38,7 +38,7 @@ class _AgriChatListScreenState extends State<AgriChatListScreen> {
           .where('agriId', isEqualTo: currentUser?.uid);
 
 
-          print('dataaaaaaa$data');
+          
 
       final usersDatalist = FirebaseFirestore.instance.collection('user_Tb');
 

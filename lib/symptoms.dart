@@ -23,7 +23,7 @@ class _symptomsState extends State<symptoms> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.teal[900],
-        title: Text("Prediction"),
+        title: const Text("Prediction"),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(25),

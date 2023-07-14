@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:plant_care/agriculture%20department/homeagri.dart';
+
 
 class editagri extends StatefulWidget {
   const editagri({Key? key}) : super(key: key);

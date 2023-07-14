@@ -17,34 +17,34 @@ class Signupagri extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         children: <Widget>[
           // logo
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(top: 50),
             child: Text(
               'Join PlantCare Community',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30),
+          const  Padding(
+            padding:  EdgeInsets.only(bottom: 30),
             child: Text(
               'Create Your Account',
               style: TextStyle(fontSize: 15),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding:  EdgeInsets.all(8.0),
             child: SignupForm(),
           ),
 
           Row(
             children: <Widget>[
-              Text('Already here  ?',
+              const Text('Already here  ?',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: Text(' Get Logged in Now!',
+                child: const  Text(' Get Logged in Now!',
                     style: TextStyle(fontSize: 20, color: Colors.green)),
               )
             ],
@@ -58,10 +58,10 @@ class Signupagri extends StatelessWidget {
     return Container(
       height: 80,
       width: 80,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(60)),
           color: Colors.blue),
-      child: Center(
+      child:  const Center(
         child: Text(
           "T",
           style: TextStyle(color: Colors.white, fontSize: 60.0),
@@ -367,6 +367,8 @@ class _SignupFormState extends State<SignupForm> {
             child: ElevatedButton(
               onPressed: () async {
 
+                print('imaaaaaa${File(imageFile!.path)}');
+
                 setState(() {
                     isLoading = true;
                   });
@@ -457,7 +459,7 @@ class _SignupFormState extends State<SignupForm> {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
 
-    print('gallerypath${file?.path}');
+  
 
     if (file != null) {
       setState(() {
@@ -476,15 +478,5 @@ class _SignupFormState extends State<SignupForm> {
         imageFile = File(file.path);
       });
     }
-    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
-    Reference refrenceroot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = refrenceroot.child('images');
-
-    Reference referenceImageToUpload = referenceDirImages.child(uniquename);
-
-    try {
-      await referenceImageToUpload.putFile(File(file!.path));
-      imageUrl = await referenceImageToUpload.getDownloadURL();
-    } catch (error) {}
   }
 }

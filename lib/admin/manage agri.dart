@@ -72,7 +72,7 @@ class _agri_detailsState extends State<agri_details> {
                         builder: (context) => Homeadmin(),
                       ));
                 },
-                icon: Icon(Icons.home))
+                icon: const Icon(Icons.home))
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(

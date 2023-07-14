@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> handleBackGroundNotification(RemoteMessage message) async {
-  print(message.notification?.title);
+ 
 }
 
 class FirebaseNotificatios {

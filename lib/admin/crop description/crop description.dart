@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:plant_care/admin/crop%20description/apple.dart';
 import 'package:plant_care/home%20public.dart';
 
-import 'carrot.dart';
 
 class cropdesc extends StatefulWidget {
   const cropdesc ({Key? key}) : super(key: key);
@@ -46,48 +45,49 @@ class _cropdescState extends State<cropdesc> {
 
                   final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
-                  print("documentSnapshot${documentSnapshot.id}");
+                  
                   return InkWell(
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => apple(
                             documentSnapshot.id,)));
                     },
-                    child: Container(
-                      child: Card(
-                        elevation: 10,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Image.network(
-                                documentSnapshot['image'],
-                                height: 99,
-                                width: 100,
-                                fit: BoxFit.fill,
-                              ),
+                    child: Card(
+                      elevation: 10,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Image.network(
+                              documentSnapshot['image'],
+                              height: 99,
+                              width: 100,
+                              fit: BoxFit.fill,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 30),
-                              child: Text(
-                                documentSnapshot['name'],
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 30),
+                            child: Text(
+                              documentSnapshot['name'],
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   );
 
                 },);
+            
             }
             return const Center(
               child: CircularProgressIndicator(),
             );
           },
         ),
+     
+     
       ),
       floatingActionButton:
       Padding(
@@ -106,7 +106,14 @@ class _cropdescState extends State<cropdesc> {
         ),
       ),
     );
+  
+  
   }
+ 
+ 
+ 
+ 
+ 
   final TextEditingController _plantController = TextEditingController();
 
   final CollectionReference _products = FirebaseFirestore.instance
