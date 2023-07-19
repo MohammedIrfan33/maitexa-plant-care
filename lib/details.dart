@@ -17,7 +17,7 @@ class _detailsState extends State<details> {
       backgroundColor: Colors.white,
       appBar: AppBar(
           backgroundColor: Colors.teal[900],
-          title: Text("Crop details"),
+          title: const Text("Crop details"),
           actions: [
             IconButton(
                 onPressed: () {

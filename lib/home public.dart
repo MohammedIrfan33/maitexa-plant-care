@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plant_care/admin/crop%20description/crop%20description.dart';
 import 'package:plant_care/login.dart';
 import 'package:plant_care/plants.dart';
+import 'package:plant_care/public_desc.dart';
 import 'package:plant_care/user/Notifications.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -73,11 +74,11 @@ class _homepageState extends State<homepage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => cropdesc(),
+                      builder: (context) =>  const Publiccropdesc(),
                     ));
               },
               backgroundColor: Colors.teal[900],
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
 
           ],
