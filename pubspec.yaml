@@ -48,6 +48,8 @@ dependencies:
   firebase_storage: ^11.2.2
   webview_flutter: ^2.0.14
   intl:
+  
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -58,6 +60,28 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons:
+  flutter_native_splash:
+  
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/logo.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: images/splash.png
+ 
+
+  android_12:
+    image: images/splash.png
+    icon_background_color: "#ffffff"
+   
+
+  
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -48,7 +48,7 @@ class _plantsState extends State<plants> {
       var jsonResponse = json.decode(responseBody);
       var data = jsonResponse['data'];
 
-      predict = data['class_name'];
+      predict = data['class_name'].replace('\n','');
 
       if (predict == "Healthy") {
         description = "Healthy Leaf";
