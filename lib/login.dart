@@ -176,6 +176,16 @@ class _LoginFormState extends State<LoginForm> {
         
 
           if (role == 'user') {
+
+             final setToken =  FirebaseFirestore.instance
+          .collection('user_Tb').doc(userId);
+            await  setToken.update(
+              {
+                
+                'token' : fcm
+              }
+            );
+           
            isAccepted ?    Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -185,12 +195,23 @@ class _LoginFormState extends State<LoginForm> {
           }
           else if (role == 'agriculture') {
 
+            final setToken =  FirebaseFirestore.instance
+          .collection('agriculture').doc(userId);
+            await  setToken.update(
+              {
+                
+                'token' : fcm
+              }
+            );
+
             isAccepted ?
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) =>Homeagri (),
               ),
+              
             )  : ScaffoldMessenger.of(context as BuildContext).showSnackBar(const SnackBar(content:Text('Admin not Verified')));
           }else if(role ==  'admin'){
            

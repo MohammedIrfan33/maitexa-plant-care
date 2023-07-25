@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,8 @@ class FirebaseNotificatios {
 
       if (adminSnapshot.docs.isNotEmpty) {
         String token = adminSnapshot.docs[0].get('token');
+        print(token);
+
         return token;
       } else {
         print('Admin document not found');
@@ -31,6 +34,34 @@ class FirebaseNotificatios {
       print('Error retrieving admin token: $error');
       return '';
     }
+  }
+
+  Future<String> getagriToken (String userId) async{
+
+     try {
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('agriculture').doc(userId).get();
+
+   
+    if (documentSnapshot.exists) {
+      
+      Map<String, dynamic> userData = documentSnapshot.data() as Map<String, dynamic> ;
+      
+
+      String token  = userData['token'];
+
+      return token;
+      
+    
+     
+    }else{
+      return '';
+    }
+  } catch (e) {
+     rethrow;
+  }
+
+
+
   }
 
   Future<void> initNotification() async {

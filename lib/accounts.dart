@@ -33,21 +33,21 @@ class _accountState extends State<account> {
               GestureDetector(
 
                 onTap: ()=>Navigator.push(context,
-                    MaterialPageRoute(builder: (context) =>  Signup())),
+                    MaterialPageRoute(builder: (context) =>  const Signup())),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 1.0, left: 60,bottom: 5),
                   child: Container(
                     height: 265,
                     width: 260,
                     decoration: BoxDecoration(
-                      image: DecorationImage(
+                      image:const DecorationImage(
                           alignment: Alignment.topLeft,
                           image: AssetImage(
                             'images/users.png',
                           ),
                           fit: BoxFit.contain
                       ),
-                      borderRadius: BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(5),
                       ),
                       border: Border.all(

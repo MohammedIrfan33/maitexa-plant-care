@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:plant_care/user/chat.dart';
 
+import '../firebase/notification.dart';
+
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
@@ -12,6 +14,7 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   bool loading = false;
   List<DocumentSnapshot> usersChatList = [];
+ final  _firebaseNotification = FirebaseNotificatios();
 
   @override
   void initState() {
@@ -72,8 +75,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   return ListTile(
                     onTap: () {
 
+                      sendNotifications(userChat.id);
+
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Your chat is ready')));
+
+                      
+
+
                        Navigator.push(context,
                 MaterialPageRoute(builder: (context) =>  ChatScreen(agriId: userChat.id,)));
+
+                 
                       
                     },
                   
@@ -94,5 +106,25 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ),
           ),
     );
+
+
+    
+  }
+
+  sendNotifications(dynamic id) async{
+
+    setState(() {
+      loading = true;
+    });
+
+    String deviceToken = await _firebaseNotification.getagriToken(id);
+
+    await _firebaseNotification.sendNotificationToAdmin(deviceToken: deviceToken,title: 'New chat',body: 'You got a new chat');
+
+    setState(() {
+      loading = false;
+    });
+
+
   }
 }
