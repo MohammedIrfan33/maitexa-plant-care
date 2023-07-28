@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plant_care/admin/admin%20crop%20desc.dart';
+
 class add extends StatefulWidget {
   const add({Key? key}) : super(key: key);
 
@@ -19,18 +20,15 @@ class _addState extends State<add> {
   File? imageFile;
   File? file;
   late String storedImage;
-  final CollectionReference crops = FirebaseFirestore.instance
-      .collection('crop');
-
+  final CollectionReference crops =
+      FirebaseFirestore.instance.collection('crop');
 
   String imageUrl = '';
-  TextEditingController cropname= TextEditingController();
-  TextEditingController sciname= TextEditingController();
-  TextEditingController orginname= TextEditingController();
-  TextEditingController soil= TextEditingController();
-  TextEditingController climate= TextEditingController();
- 
-
+  TextEditingController cropname = TextEditingController();
+  TextEditingController sciname = TextEditingController();
+  TextEditingController orginname = TextEditingController();
+  TextEditingController soil = TextEditingController();
+  TextEditingController climate = TextEditingController();
 
   Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
@@ -66,44 +64,46 @@ class _addState extends State<add> {
           );
         });
   }
- addcrop()async{
-   final String crop = cropname.text;
-   final String? sc = sciname.text;
-   final String? image = imageUrl;
-   final String? cli = climate.text;
-   final String? origin = orginname.text;
-   final String? soi = soil.text;
-   if (crop != null) {
-     await crops.add({
-       "climate": cli,
-       "name": crop,
-       "image": image,
-       "orgin":origin,
-     "scientificname":sc,
-     "soil":soi,
-     
-     
 
-     });
-     Navigator.push(context, MaterialPageRoute(builder: (context)=>cropdesc_admin()));
-     cropname.text = '';
-     sciname.text = '';
-     climate.text = '';
-     orginname.text = '';
-     soil.text = '';
-   }
- }
+  addcrop() async {
+    final String crop = cropname.text;
+    final String sc = sciname.text;
+    final String image = imageUrl;
+    final String cli = climate.text;
+    final String origin = orginname.text;
+    final String soi = soil.text;
+    if (crop.isNotEmpty) {
+      await crops.add({
+        "climate": cli,
+        "name": crop,
+        "image": image,
+        "orgin": origin,
+        "scientificname": sc,
+        "soil": soi,
+      });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => cropdesc_admin()));
+      cropname.text = '';
+      sciname.text = '';
+      climate.text = '';
+      orginname.text = '';
+      soil.text = '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: const Text("Crops"),
-    backgroundColor: Colors.teal[900],),
-    body: ListView(
-    children: [
-      const SizedBox(height: 20,),
-      
-     /* Padding(
+        backgroundColor: Colors.teal[900],
+      ),
+      body: ListView(children: [
+        const SizedBox(
+          height: 20,
+        ),
+
+        /* Padding(
         padding: const EdgeInsets.only(left: 50,right: 50,),
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -111,10 +111,10 @@ class _addState extends State<add> {
               fixedSize: Size(150, 80),
             ),
             onPressed: () async {
-            *//*  image = await picker.pickImage(source: ImageSource.gallery);
+            */ /*  image = await picker.pickImage(source: ImageSource.gallery);
               setState(() {
                 //update UI
-              });*//*
+              });*/ /*
               ImagePicker imagePicker=ImagePicker();
               XFile? file= await imagePicker.pickImage(source: ImageSource.gallery);
               print('${file?.path}');
@@ -149,10 +149,10 @@ class _addState extends State<add> {
             fixedSize: Size(150, 80),
           ),
           onPressed: () async {
-          *//*  image = await picker.pickImage(source: ImageSource.camera);
+          */ /*  image = await picker.pickImage(source: ImageSource.camera);
             setState(() {
               //update UI
-            });*//*
+            });*/ /*
             ImagePicker imagePicker=ImagePicker();
             XFile? file= await imagePicker.pickImage(source: ImageSource.camera);
             print('${file?.path}');
@@ -178,193 +178,154 @@ class _addState extends State<add> {
         ),
       ),
       image == null ? Container() : Image.file(File(image!.path)),*/
-    Padding(
-      padding: const EdgeInsets.all(15),
-      child: TextField(
-        controller: cropname,
-      decoration:const  InputDecoration(
-      border: OutlineInputBorder(),
-        hintText: 'Enter crop name',
-      ),
-      ),
-    ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: sciname,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter scientific name',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: cropname,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter crop name',
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: orginname,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter origin',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: sciname,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter scientific name',
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: soil,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter suitable soil',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: orginname,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter origin',
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: climate,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter climate and humidity',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: soil,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter suitable soil',
+            ),
           ),
         ),
-      ),
-
-      Container(
-        margin:const EdgeInsets.only(top: 20),
-        /* decoration: BoxDecoration(
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: climate,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter climate and humidity',
+            ),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 20),
+          /* decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('images/bg.jpg')
                       )
                     ),*/
-        child: imageFile == null
-            ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                const Text('Upload image'),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal[900]
-                  ),
-                  onPressed: () {
-                    
-                    _showChoiceDialog(context);
-                  },
-                  child: const Text("Upload Image"),
+          child: imageFile == null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    const Text('Upload image'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal[900]),
+                      onPressed: () {
+                        _showChoiceDialog(context);
+                      },
+                      child: const Text("Upload Image"),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(imageFile!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal[900]),
+                      onPressed: () {
+                        _showChoiceDialog(context);
+                      },
+                      child: const Text("Change Image"),
+                    ),
+                  ],
                 ),
-                
-              ],
-            )
-            : Column(
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(imageFile!),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal[900]
-              ),
-              onPressed: () {
-               
-                _showChoiceDialog(context);
-                },
-              child: const Text("Change Image"),
-            ),
-          ],
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all( 50),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal[900],
+        Padding(
+          padding: const EdgeInsets.all(50),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal[900],
+            ),
+            onPressed: () async {
+              String uniquename =
+                  DateTime.now().microsecondsSinceEpoch.toString();
+              Reference refrenceroot = FirebaseStorage.instance.ref();
+              Reference referenceDirImages = refrenceroot.child('images');
+
+              Reference referenceImageToUpload =
+                  referenceDirImages.child(uniquename);
+
+              
+              await referenceImageToUpload.putFile(imageFile!);
+              imageUrl = await referenceImageToUpload.getDownloadURL();
+             
+              addcrop();
+            },
+            child: const Text("submit",
+                style: TextStyle(
+                  color: Colors.white,
+                )),
           ),
-          onPressed: () {
-            addcrop();
-          /*  FirebaseFirestore.instance.collection("crop").add({
-              "name":cropname.text,
-              "scientificname":sciname.text,
-              "orgin":orginname.text,
-              "soil":soil.text,
-              "climate":climate.text,
-              "image":imageUrl,
-            }).then((value) {
-              print(value.id);
-              Navigator.pop(context);
-            }).catchError(
-                    (error) => print("failed to add new booking $error"));
-       */   },
-          child: Text("submit",
-              style: TextStyle(
-                color: Colors.white,
-              )),
         ),
-      ),
-    ]),
+      ]),
     );
   }
+
   /// Get from gallery
   Future<void> _getFromGallery() async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-   
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery,imageQuality: 50);
+
     if (file != null) {
       setState(() {
         imageFile = File(file.path);
       });
     }
-    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
-    Reference refrenceroot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = refrenceroot.child('images');
-
-    Reference referenceImageToUpload = referenceDirImages.child(uniquename);
-
-    try {
-      await referenceImageToUpload.putFile(File(file!.path));
-      imageUrl = await referenceImageToUpload.getDownloadURL();
-    } catch (error) {}
   }
 
   /// Get from Camera
   Future<void> _getFromCamera() async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.camera);
-    
+    XFile? file = await imagePicker.pickImage(source: ImageSource.camera,imageQuality: 30);
+
     if (file != null) {
       setState(() {
         imageFile = File(file.path);
       });
     }
-    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
-    Reference refrenceroot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = refrenceroot.child('images');
-
-    Reference referenceImageToUpload = referenceDirImages.child(uniquename);
-
-    try {
-      await referenceImageToUpload.putFile(File(file!.path));
-      imageUrl = await referenceImageToUpload.getDownloadURL();
-    } catch (error) {}
-
-    /*   PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-      */ /*  _filename = basename(imageFile!.path).toString();
-        final _nameWithoutExtension = basenameWithoutExtension(imageFile!.path);
-        final _extenion = extension(imageFile!.path);*/ /*
-      });
-    }*/
   }
 }
