@@ -5,18 +5,27 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plant_care/admin/admin%20crop%20desc.dart';
+
 class EditCrop extends StatefulWidget {
-  const EditCrop({Key? key, required this.name, required this.scName, required this.orginName, required this.soilname, required this.cliHumdity, required this.image, required this.id}) : super(key: key);
+  const EditCrop(
+      {Key? key,
+      required this.name,
+      required this.scName,
+      required this.orginName,
+      required this.soilname,
+      required this.cliHumdity,
+      required this.image,
+      required this.id})
+      : super(key: key);
 
   final String name;
   final String scName;
   final String orginName;
   final String soilname;
   final String cliHumdity;
- 
+
   final String image;
   final String id;
-
 
   @override
   State<EditCrop> createState() => _EditCropState();
@@ -25,21 +34,19 @@ class EditCrop extends StatefulWidget {
 class _EditCropState extends State<EditCrop> {
   ImagePicker picker = ImagePicker();
   XFile? image;
- 
+
   File? imageFile;
   File? file;
   late String storedImage;
-  DocumentReference ?  crops;
-
+  DocumentReference? crops;
 
   String imageUrl = '';
-  TextEditingController cropname= TextEditingController();
-  TextEditingController sciname= TextEditingController();
-  TextEditingController orginname= TextEditingController();
-  TextEditingController soil= TextEditingController();
-  TextEditingController climate= TextEditingController();
+  TextEditingController cropname = TextEditingController();
+  TextEditingController sciname = TextEditingController();
+  TextEditingController orginname = TextEditingController();
+  TextEditingController soil = TextEditingController();
+  TextEditingController climate = TextEditingController();
   TextEditingController description = TextEditingController();
-
 
   Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
@@ -75,54 +82,52 @@ class _EditCropState extends State<EditCrop> {
           );
         });
   }
- updateCrop()async{
-   if (crops != null) {
-     await crops?.update({
-       "climate": climate.text,
-       "name":  cropname.text,
-       
-       "orgin":orginname.text,
-     "scientificname":sciname.text,
-     "soil":soil.text,
-     
-     
 
-     });
-     Navigator.push(context, MaterialPageRoute(builder: (context)=>cropdesc_admin()));
+  updateCrop() async {
+    if (crops != null) {
+      await crops?.update({
+        "climate": climate.text,
+        "name": cropname.text,
+        "orgin": orginname.text,
+        "scientificname": sciname.text,
+        "soil": soil.text,
      
-   }else{
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Not Found')));
-   }
- }
+      });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => cropdesc_admin()));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Not Found')));
+    }
+  }
 
- @override
+  @override
   void initState() {
+    crops = FirebaseFirestore.instance.collection('crop').doc(widget.id);
 
-      crops =  FirebaseFirestore.instance
-      .collection('crop').doc(widget.id);
+    cropname.text = widget.name;
+    climate.text = widget.cliHumdity;
+    sciname.text = widget.scName;
+    orginname.text = widget.orginName;
+    imageUrl = widget.image;
+    soil.text = widget.soilname;
 
-      cropname.text = widget.name;
-      climate.text = widget.cliHumdity;
-      sciname.text = widget.scName;
-      orginname.text = widget.orginName;
-      imageUrl = widget.image;
-      soil.text = widget.soilname;
-      
-
-    
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: const Text("Crops"),
-    backgroundColor: Colors.teal[900],),
-    body: ListView(
-    children: [
-      const SizedBox(height: 20,),
-      
-     /* Padding(
+        backgroundColor: Colors.teal[900],
+      ),
+      body: ListView(children: [
+        const SizedBox(
+          height: 20,
+        ),
+
+        /* Padding(
         padding: const EdgeInsets.only(left: 50,right: 50,),
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -130,10 +135,10 @@ class _EditCropState extends State<EditCrop> {
               fixedSize: Size(150, 80),
             ),
             onPressed: () async {
-            *//*  image = await picker.pickImage(source: ImageSource.gallery);
+            */ /*  image = await picker.pickImage(source: ImageSource.gallery);
               setState(() {
                 //update UI
-              });*//*
+              });*/ /*
               ImagePicker imagePicker=ImagePicker();
               XFile? file= await imagePicker.pickImage(source: ImageSource.gallery);
               print('${file?.path}');
@@ -168,10 +173,10 @@ class _EditCropState extends State<EditCrop> {
             fixedSize: Size(150, 80),
           ),
           onPressed: () async {
-          *//*  image = await picker.pickImage(source: ImageSource.camera);
+          */ /*  image = await picker.pickImage(source: ImageSource.camera);
             setState(() {
               //update UI
-            });*//*
+            });*/ /*
             ImagePicker imagePicker=ImagePicker();
             XFile? file= await imagePicker.pickImage(source: ImageSource.camera);
             print('${file?.path}');
@@ -197,181 +202,173 @@ class _EditCropState extends State<EditCrop> {
         ),
       ),
       image == null ? Container() : Image.file(File(image!.path)),*/
-    Padding(
-      padding: const EdgeInsets.all(15),
-      child: TextField(
-        controller: cropname,
-      decoration:const  InputDecoration(
-      border: OutlineInputBorder(),
-        hintText: 'Enter crop name',
-      ),
-      ),
-    ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: sciname,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter scientific name',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: cropname,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter crop name',
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: orginname,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter origin',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: sciname,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter scientific name',
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: soil,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter suitable soil',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: orginname,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter origin',
+            ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextField(
-          controller: climate,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter climate and humidity',
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: soil,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter suitable soil',
+            ),
           ),
         ),
-      ),
-      
-
-      Container(
-        margin:const EdgeInsets.only(top: 20),
-        /* decoration: BoxDecoration(
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: TextField(
+            controller: climate,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter climate and humidity',
+            ),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 20),
+          /* decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('images/bg.jpg')
                       )
                     ),*/
-        child: imageUrl == ''
-            ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                const Text('Upload image'),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal[900]
-                  ),
-                  onPressed: () {
-                    
-                    _showChoiceDialog(context);
-                  },
-                  child: const Text("Upload Image"),
+          child: imageUrl == ''
+              ?  Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    const Text('Upload image'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal[900]),
+                      onPressed: () {
+                        _showChoiceDialog(context);
+                      },
+                      child: const Text("Upload Image"),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                   imageFile != null ? Container(
+                      width: 100,
+                      height: 100,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(imageFile!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )  : Container(
+                      width: 100,
+                      height: 100,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(imageUrl),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal[900]),
+                      onPressed: () async {
+                        await _showChoiceDialog(context);
+                        setState(() {});
+                      },
+                      child: const Text("Change Image"),
+                    ),
+                  ],
                 ),
-                
-              ],
-            )
-            : Column(
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal[900]
-              ),
-              onPressed: () {
-               
-                _showChoiceDialog(context);
-                },
-              child: const Text("Change Image"),
-            ),
-          ],
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all( 50),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal[900],
+        Padding(
+          padding: const EdgeInsets.all(50),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal[900],
+            ),
+            onPressed: () async {
+              if (imageFile != null) {
+                String uniquename =
+                    DateTime.now().microsecondsSinceEpoch.toString();
+                Reference refrenceroot = FirebaseStorage.instance.ref();
+                Reference referenceDirImages = refrenceroot.child('images');
+
+                Reference referenceImageToUpload =
+                    referenceDirImages.child(uniquename);
+
+                try {
+                  await referenceImageToUpload.putFile(imageFile!);
+                  imageUrl = await referenceImageToUpload.getDownloadURL();
+                } catch (error) {}
+              }
+              if (imageUrl != '') {
+                await crops?.update({"image": imageUrl});
+              }
+              updateCrop();
+            },
+            child: Text("submit",
+                style: TextStyle(
+                  color: Colors.white,
+                )),
           ),
-          onPressed: () {
-            updateCrop();
-          /*  FirebaseFirestore.instance.collection("crop").add({
-              "name":cropname.text,
-              "scientificname":sciname.text,
-              "orgin":orginname.text,
-              "soil":soil.text,
-              "climate":climate.text,
-              "image":imageUrl,
-            }).then((value) {
-              print(value.id);
-              Navigator.pop(context);
-            }).catchError(
-                    (error) => print("failed to add new booking $error"));
-       */   },
-          child: Text("submit",
-              style: TextStyle(
-                color: Colors.white,
-              )),
         ),
-      ),
-    ]),
+      ]),
     );
   }
+
   /// Get from gallery
   Future<void> _getFromGallery() async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-   
+    XFile? file = await imagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 30);
+
     if (file != null) {
       setState(() {
         imageFile = File(file.path);
       });
     }
-    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
-    Reference refrenceroot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = refrenceroot.child('images');
-
-    Reference referenceImageToUpload = referenceDirImages.child(uniquename);
-
-    try {
-      await referenceImageToUpload.putFile(File(file!.path));
-      imageUrl = await referenceImageToUpload.getDownloadURL();
-    } catch (error) {}
   }
 
   /// Get from Camera
   Future<void> _getFromCamera() async {
     ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.camera);
-    
+    XFile? file = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 30);
+
     if (file != null) {
       setState(() {
         imageFile = File(file.path);
       });
     }
-    String uniquename = DateTime.now().microsecondsSinceEpoch.toString();
-    Reference refrenceroot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = refrenceroot.child('images');
-
-    Reference referenceImageToUpload = referenceDirImages.child(uniquename);
-
-    try {
-      await referenceImageToUpload.putFile(File(file!.path));
-      imageUrl = await referenceImageToUpload.getDownloadURL();
-    } catch (error) {}
 
     /*   PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
