@@ -110,7 +110,7 @@ class _appleState extends State<apple> {
                             name: fullname,
                             scName: sname,
                             orginName: orgin,
-                            soilname: sname,
+                            soilname: soil,
                             cliHumdity: climate,
                             
                             image: image,
